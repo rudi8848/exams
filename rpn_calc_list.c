@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ERROR -1103
+#define ERROR -99999
 
 typedef		struct	s_list
 {
@@ -65,7 +65,14 @@ int		ft_rpn_calc(t_list **stack, char *str)
 	head = *stack;
 	while (str[i] != '\0')
 	{
-		if (str[i] == '+')
+		if ((str[i] == '-' && ft_is_digit(str[i + 1])) || ft_is_digit(str[i]))
+		{
+			push(&head, atoi(str + i));
+			i++;										//это обязательно для отрицательных чисел
+			while (str[i] && ft_is_digit(str[i]))
+				i++;
+		}
+		else if (str[i] == '+')
 			push(&head, pop(&head) + pop(&head));
 		else if (str[i] == '-')
 			push(&head, -pop(&head) + pop(&head));
@@ -81,17 +88,11 @@ int		ft_rpn_calc(t_list **stack, char *str)
 			tmp = pop(&head);
 			push(&head, pop(&head) % tmp);
 		}
-		if (ft_is_digit(str[i]))
-		{
-			push(&head, atoi(str + i));
-			while (str[i] && ft_is_digit(str[i]))
-				i++;
-		}
 		i++;
 	}
 	if (head->next != NULL)
 	{
-		printf("Error\n");
+		printf("Error1\n");
 		return ERROR;
 	}
 	return (head->value);
@@ -125,6 +126,6 @@ int		main(int argc, char **argv)
 		}
 	}
 	else
-		printf("Error2\n");
+		printf("Error\n");
 	return (ERROR);
 }
