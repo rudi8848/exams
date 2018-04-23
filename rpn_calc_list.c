@@ -73,11 +73,15 @@ int		ft_rpn_calc(char *str)
 		else if (head != NULL && head->next != NULL && str[i] == '/')
 		{
 			tmp = pop(&head);
+			if (tmp == 0)
+				return 0;
 			push(&head, pop(&head) / tmp);
 		}
 		else if (head != NULL && str[i] == '%')
 		{
 			tmp = pop(&head);
+			if (tmp == 0)
+				return 0;
 			push(&head, pop(&head) % tmp);
 		}
 		else if (str[i] != ' ')
