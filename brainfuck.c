@@ -1,33 +1,204 @@
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <stddef.h>
+#include <stdint.h>
+/*
+#define BF_INC '>'
+#define BF_DEC '<'
+#define BF_ADD '+'
+#define BF_SUB '-'
+#define BF_OUT '.'
+#define BF_STT '['
+#define BF_END ']'
+
+
+
+void    *ft_memset(void *mem, int val, size_t size)
+{
+    uint8_t         *cmem;
+    uint8_t         cval;
+    size_t          i;
+
+    cmem = (uint8_t *)mem;
+    cval = (uint8_t)val;
+    i = 0;
+    while (i < size)
+    {
+        cmem[i] = cval;
+        ++i;
+    }
+    return (mem);
+}
+
+void    ft_brainfuck(char *prog)
+{
+    uint8_t             *mem;
+    uint8_t             *ptr;
+    int                 stack;
+    int                 i;
+
+    mem = (uint8_t *)malloc(sizeof(uint8_t) * 2048);
+    if (mem == NULL)
+        return ;
+    ft_memset(mem, 0, sizeof(uint8_t) * 2048);
+    ptr = mem;
+    i = 0;
+    while (prog[i])
+    {
+        if (prog[i] == BF_INC)
+            ++ptr;
+        else if (prog[i] == BF_DEC)
+            --ptr;
+        else if (prog[i] == BF_ADD)
+            ++(*ptr);
+        else if (prog[i] == BF_SUB)
+            --(*ptr);
+        else if (prog[i] == BF_OUT)
+            write(1, ptr, 1);
+        else if (prog[i] == BF_STT)
+        {
+            if (*ptr == 0)
+            {
+                stack = 0;
+                while (prog[i])
+                {
+                    if (prog[i] == BF_STT)
+                    {
+                        ++stack;
+                    }
+                    else if (prog[i] == BF_END)
+                    {
+                        if (stack)
+                            --stack;
+                        if (stack == 0)
+                            break ;
+                    }
+                    ++i;
+                }
+            }
+        }
+        else if (prog[i] == BF_END)
+        {
+            if (*ptr != 0)
+            {
+                stack = 0;
+                while (i >= 0)
+                {
+                    if (prog[i] == BF_END)
+                    {
+                        ++stack;
+                    }
+                    else if (prog[i] == BF_STT)
+                    {
+                        if (stack)
+                            --stack;
+                        if (stack == 0)
+                            break ;
+                    }
+                    --i;
+                }
+            }
+        }
+        ++i;
+    }
+}
+*/
+
+
+unsigned char   *ft_memalloc(void)
+{
+    int i = 0;
+    int n = 4096;
+
+    unsigned char *ptr = (unsigned char*)malloc(sizeof(char) * n);
+
+    while (i < n)
+    {
+        ptr[i] = 0;
+        i++;
+    }
+    return (ptr);
+}
 
 void    ft_brainfuck(char *str)
 {
-    int        i;
-    char    *ptr;
+    
+    unsigned char *ptr;
+    int i = 0;
+    int loop;
 
-    i = 0;
-    ptr = (char*)malloc(sizeof(char*) * 2048);
-    while (str[i] != 0)
+    ptr = ft_memalloc();
+    while (str[i])
     {
-        *ptr += str[i] == '+' ? 1 : 0;
-        *ptr -= str[i] == '-' ? 1 : 0;
-        ptr += str[i] == '>' ? 1 : 0;
-        ptr -= str[i] == '<' ? 1 : 0;
-        if (str[i] == '[' && *ptr == 0)
-            while (str[i] != ']')
-                i++;
-        if (str[i] == ']' && *ptr != 0)
-            while (str[i] != '[')
-                i--;
-        if (str[i] == '.')
+
+        if (str[i] == '>')
+            ptr++;
+        else if (str[i] == '<')
+            ptr--;
+        else if (str[i] == '+')
+            (*ptr)++;
+        else if (str[i] == '-')
+            (*ptr)--;
+        else if (str[i] == '.')
             write(1, ptr, 1);
+
+        if (str[i] == '[')
+        {
+            if (*ptr == 0)
+            {
+                loop = 0;
+                while (str[i])
+                {
+                    if (str[i] == '[')
+                        loop++;
+                    else if (str[i] == ']')
+                    {
+                        if (loop)
+                        loop--;
+                    
+                        if (loop == 0)
+                            break;
+                    }
+                    i++;
+                }
+            }
+        }
+
+        else if (str[i] == ']')
+        {
+            if (*ptr != 0)
+            {
+                loop = 0;
+                while (i >= 0)
+                {
+                    if (str[i] == ']')
+                        loop++;
+                    else if (str[i] == '[')
+                    {
+                        if (loop)
+                            loop--;
+                        if (loop == 0)
+                            break;
+                    }
+                    i--;
+                }
+            }
+        }
+
         i++;
     }
 }
 
 int        main(void)
 {
+//    char buf[2048];
+  //  int a;
+
+    
+    //    a = 0;
+      //  while (a < 2048)
+        //    buf[a++] = 0;
     ft_brainfuck("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
     write(1, "\n", 1);
     ft_brainfuck("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
