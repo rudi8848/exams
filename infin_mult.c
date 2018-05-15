@@ -23,12 +23,10 @@ void	ft_mult(char *a, char *b)
 	
 	char *c = (char*)malloc(sizeof(char) *clen + 1);
 	
-
 	int i;
-	int carry;
-	int index;
 	int j;
-
+	int index;
+	int carry;
 
 	i = 0;
 
